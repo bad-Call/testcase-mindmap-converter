@@ -12,9 +12,10 @@ export function parseMd(mdContent: string): CaseNode | null {
   const text = titleMatch[1].trim();
   let priority: CaseNode["priority"] = 4; // Default priority C
   const precondition: string[] = [];
-  const steps: CaseNode["steps"] = [];
+  let steps: CaseNode["steps"] = [];
 
   let parsingState: "precondition" | "steps" | null = null;
+  const stepLines: string[] = [];
 
   for (const line of lines) {
     const trimmedLine = line.trim();
@@ -36,6 +37,10 @@ export function parseMd(mdContent: string): CaseNode | null {
       }
     } else if (trimmedLine.startsWith("- Precondition:")) {
       parsingState = "precondition";
+      // Reset steps parsing when precondition is found after steps
+      if (stepLines.length > 0) {
+        parsingState = null;
+      }
     } else if (trimmedLine.startsWith("- Steps:")) {
       parsingState = "steps";
     } else if (
@@ -44,15 +49,15 @@ export function parseMd(mdContent: string): CaseNode | null {
     ) {
       precondition.push(trimmedLine.substring(2).trim());
     } else if (parsingState === "steps" && trimmedLine.startsWith("|")) {
-      const parts = trimmedLine.split("|").map((s) => s.trim());
-      if (
-        parts.length >= 4 &&
-        parts[1] !== "Action" &&
-        !parts[1].startsWith("---")
-      ) {
-        steps.push({ action: parts[1], expect: parts[2] });
-      }
+      stepLines.push(trimmedLine);
+    } else if (parsingState === "steps" && !trimmedLine.startsWith("|")) {
+      // Stop parsing steps if a non-table line is found
+      parsingState = null;
     }
+  }
+
+  if (stepLines.length > 0) {
+    steps = parseMdTable(stepLines.join("\n"));
   }
 
   return {
