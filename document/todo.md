@@ -1,7 +1,7 @@
 # 项目开发 TODO 列表
 
 以下是一份「测试驱动（TDD）」节奏下的 coding TODO 列表。
-每条任务都以「红-绿-重构」循环推进：**先写测试 → 让测试通过 → 可选重构**。
+每条任务都以「红-绿-重构」循环推进：**先写测试 → 让测试通过 → 可选重构**。(建议每次测试通过后，提交代码, 并更新TODO的进度)
 列表按「纵向切片」划分，每个切片产出可直接交付的用户价值，方便随时暂停/继续。
 
 ---
@@ -32,16 +32,16 @@
         ✅ 输入带 `stepTag` 的单用例 JSON → 输出 `CaseNode`
         ✅ 输入模块节点 → 输出 `ModuleNode`
 - [x] 2.2 实现 `parse_json.ts`（仅让测试通过）
-- [ ] 2.3 写 `render_json.test.ts`
+- [x] 2.3 写 `render_json.test.ts`
         ✅ 把 2.2 的 `CaseNode/ModuleNode` 转回含 `stepTag` 的 JSON
-- [ ] 2.4 实现 `render_json.ts`
-- [ ] 2.5 **重构**：把 2.2 & 2.4 中公用的“拆/装”逻辑抽到 `json_transformer.ts`，测试保持不变（保证行为锁定）
+- [x] 2.4 实现 `render_json.ts`
+- [x] 2.5 **重构**：把 2.2 & 2.4 中公用的“拆/装”逻辑抽到 `json_transformer.ts`，测试保持不变（保证行为锁定）
 
 ---
 
 ### 阶段 3 - Markdown ⇄ Domain 最小可运行环（3 d）
 
-- [ ] 3.1 写 `parse_md.test.ts`
+- [x] 3.1 写 `parse_md.test.ts`
         ✅ 六级标题 + 优先级行 + 前置条件列表 + 步骤表格 → `CaseNode`
 - [ ] 3.2 实现 `parse_md.ts`（最简单字符串 split 版本）
 - [ ] 3.3 写 `render_md.test.ts`
