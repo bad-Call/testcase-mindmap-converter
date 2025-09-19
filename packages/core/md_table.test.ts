@@ -14,7 +14,7 @@ describe("md_table", () => {
 
   describe("parseMdTable", () => {
     it("should parse a markdown table string into an array of objects", () => {
-      const result = parseMdTable(tableString);
+      const result = parseMdTable(tableString, 1);
       expect(result).toEqual(tableArray);
     });
   });
