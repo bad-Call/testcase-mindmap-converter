@@ -43,31 +43,31 @@
 
 - [x] 3.1 写 `parse_md.test.ts`
         ✅ 六级标题 + 优先级行 + 前置条件列表 + 步骤表格 → `CaseNode`
-- [ ] 3.2 实现 `parse_md.ts`（最简单字符串 split 版本）
-- [ ] 3.3 写 `render_md.test.ts`
+- [x] 3.2 实现 `parse_md.ts`（最简单字符串 split 版本）
+- [x] 3.3 写 `render_md.test.ts`
         ✅ 把 3.2 的 `CaseNode` 渲染成合规 Markdown 字符串
-- [ ] 3.4 实现 `render_md.ts`
-- [ ] 3.5 **重构**：提取 `md_table.ts` 负责 `| 动作 | 预期 |` 与数组互转；测试先红后绿。
+- [x] 3.4 实现 `render_md.ts`
+- [x] 3.5 **重构**：提取 `md_table.ts` 负责 `| 动作 | 预期 |` 与数组互转；测试先红后绿。
 
 ---
 
 ### 阶段 4 - 边界 & 异常（2 d）
 
-- [ ] 4.1 异常测试：缺失必填字段、表格列数不对、优先级非法
+- [x] 4.1 异常测试：缺失必填字段、表格列数不对、优先级非法
         ✅ 期望抛出 `ParseError`，行号准确
-- [ ] 4.2 实现异常分支 & 错误码常量
+- [x] 4.2 实现异常分支 & 错误码常量
 - [ ] 4.3 property-based test（可选）：用 `fast-check` 随机生成合法用例，round-trip 必须相等
 
 ---
 
 ### 阶段 5 - Adapter 层（1.5 d）
 
-- [ ] 5.1 写 `clipboard.test.ts`（Node 环境用 `vitest-canvas-mock`）
+- [x] 5.1 写 `clipboard.test.ts`（Node 环境用 `vitest-canvas-mock`）
         ✅ 读：自动剥 BOM；写：自动加 BOM
-- [ ] 5.2 实现 `clipboard.ts`
-- [ ] 5.3 写 `file_io.test.ts`
+- [x] 5.2 实现 `clipboard.ts`
+- [x] 5.3 写 `file_io.test.ts`
         ✅ 触发下载、选择文件后得到文本内容
-- [ ] 5.4 实现 `file_io.ts`
+- [x] 5.4 实现 `file_io.ts`
 
 ---
 
