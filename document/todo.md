@@ -73,17 +73,17 @@
 
 ### 阶段 6 - UI 胶水 & 集成（2 d）
 
-- [ ] 6.1 写 `App.vue` 的单元测试（@vue/test-utils）
+- [x] 6.1 写 `App.vue` 的单元测试（@vue/test-utils）
         ✅ 点击「MD→JSON」按钮后，mock clipboard 被调用
-- [ ] 6.2 实现最简 UI：两个文本框 + 两个按钮 + 错误提示
-- [ ] 6.3 端到端测试（playwright）
+- [x] 6.2 实现最简 UI：两个文本框 + 两个按钮 + 错误提示
+- [x] 6.3 端到端测试（playwright）
         ✅ 把示例 Markdown 贴进去 → 导出 JSON → 再导入 → 内容一致
 
 ---
 
 ### 阶段 7 - 打包 & 发布（0.5 d）
 
-- [ ] 7.1 `pnpm build` 生成单 HTML
+- [x] 7.1 `pnpm build` 生成单 HTML
 - [ ] 7.2 断言构建产物：
         ✅ 文件数 = 1 & gzip < 1 MB & 双击能打开 & 控制台无 404
 - [ ] 7.3 GitHub Release 自动上传 `index.html` + sourcemap

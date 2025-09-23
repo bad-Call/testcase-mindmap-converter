@@ -7,6 +7,12 @@ describe("file_io", () => {
       const createObjectURLSpy = vi.spyOn(URL, "createObjectURL");
       const revokeObjectURLSpy = vi.spyOn(URL, "revokeObjectURL");
       const createElementSpy = vi.spyOn(document, "createElement");
+      const appendChildSpy = vi
+        .spyOn(document.body, "appendChild")
+        .mockImplementation((node: any) => node);
+      const removeChildSpy = vi
+        .spyOn(document.body, "removeChild")
+        .mockImplementation((node: any) => node);
 
       const mockLink = {
         href: "",
@@ -27,6 +33,8 @@ describe("file_io", () => {
       createObjectURLSpy.mockRestore();
       revokeObjectURLSpy.mockRestore();
       createElementSpy.mockRestore();
+      appendChildSpy.mockRestore();
+      removeChildSpy.mockRestore();
     });
   });
 
@@ -62,6 +70,12 @@ describe("file_io", () => {
         }),
       };
       vi.spyOn(document, "createElement").mockReturnValue(mockInput as any);
+      const appendChildSpy = vi
+        .spyOn(document.body, "appendChild")
+        .mockImplementation((node: any) => node);
+      const removeChildSpy = vi
+        .spyOn(document.body, "removeChild")
+        .mockImplementation((node: any) => node);
 
       const promise = selectFile("text/plain");
 
@@ -73,6 +87,8 @@ describe("file_io", () => {
 
       vi.spyOn(window, "FileReader").mockRestore();
       vi.spyOn(document, "createElement").mockRestore();
+      appendChildSpy.mockRestore();
+      removeChildSpy.mockRestore();
     });
   });
 });

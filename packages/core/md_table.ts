@@ -34,8 +34,8 @@ export function parseMdTable(
 }
 
 export function renderMdTable(steps: Step[]): string {
-  const header = `| Action | Expected Result |`;
-  const separator = `|---|---|`;
+  const header = `| Action | Expect |`;
+  const separator = `| --- | --- |`;
   const rows = steps.map((step) => `| ${step.action} | ${step.expect} |`);
 
   return [header, separator, ...rows].join("\n");

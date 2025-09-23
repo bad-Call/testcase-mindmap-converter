@@ -20,32 +20,6 @@ Object.defineProperty(globalThis, "URL", {
   writable: true,
 });
 
-// Mock document for createElement, appendChild, removeChild
-Object.defineProperty(globalThis, "document", {
-  value: {
-    createElement: vi.fn((tagName) => {
-      const newMockElement = {
-        href: "",
-        download: "",
-        click: vi.fn(),
-        remove: vi.fn(),
-        style: { display: "" },
-        addEventListener: vi.fn(),
-        files: [],
-      };
-      if (tagName === "a" || tagName === "input") {
-        return newMockElement;
-      }
-      return {};
-    }),
-    body: {
-      appendChild: vi.fn(),
-      removeChild: vi.fn(),
-    },
-  },
-  writable: true,
-});
-
 // Mock FileReader
 Object.defineProperty(globalThis, "FileReader", {
   value: vi.fn(() => ({

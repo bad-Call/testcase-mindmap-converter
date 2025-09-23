@@ -10,7 +10,11 @@ export function renderMd(node: CaseNode): string {
   const preconditionItems = node.precondition.map((p) => `  - ${p}`);
   const precondition = `- Precondition:\n${preconditionItems.join("\n")}`;
 
-  const steps = `- Steps:\n${renderMdTable(node.steps)}`;
+  const table = renderMdTable(node.steps)
+    .split("\n")
+    .map((line) => `  ${line}`)
+    .join("\n");
+  const steps = `- Steps:\n${table}`;
 
   const parts = [title, priority];
   if (node.precondition.length > 0) {
