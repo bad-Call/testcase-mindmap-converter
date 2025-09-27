@@ -24,10 +24,10 @@ describe("renderMd", () => {
   - Step 1
   - Step 2
 - Steps:
-| Action | Expected Result |
-|---|---|
-| Do something | Something happens |
-| Do another thing | Another thing happens |`;
+  | Action | Expect |
+  | --- | --- |
+  | Do something | Something happens |
+  | Do another thing | Another thing happens |`;
 
     const result = renderMd(node);
     expect(result.trim()).toBe(expectedMd.trim());

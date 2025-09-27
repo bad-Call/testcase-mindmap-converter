@@ -7,8 +7,8 @@ describe("md_table", () => {
     { action: "Do another thing", expect: "Another thing happens" },
   ];
 
-  const tableString = `| Action | Expected Result |
-|---|---|
+  const tableString = `| Action | Expect |
+| --- | --- |
 | Do something | Something happens |
 | Do another thing | Another thing happens |`;
 

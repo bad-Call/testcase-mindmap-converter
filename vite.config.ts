@@ -10,6 +10,7 @@ export default defineConfig({
     globals: true,
     environment: "jsdom",
     setupFiles: ["vitest-canvas-mock", "./vitest.setup.ts"],
+    include: ["packages/**/*.test.ts"],
   },
   resolve: {
     alias: {
