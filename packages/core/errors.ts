@@ -7,3 +7,10 @@ export class ParseError extends Error {
     this.name = "ParseError";
   }
 }
+
+export class RenderError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "RenderError";
+  }
+}

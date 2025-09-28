@@ -21,7 +21,7 @@ describe("parseMd", () => {
 
       const expectedNode: CaseNode = {
         type: "case",
-        text: "Test Case Title",
+        title: "Test Case Title",
         priority: 2, // P1 maps to 2 in default config
         owningSide: [],
         case: [],

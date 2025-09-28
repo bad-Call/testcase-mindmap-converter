@@ -13,19 +13,27 @@ describe("App.vue", () => {
       .spyOn(clipboard, "writeClipboard")
       .mockImplementation(() => Promise.resolve());
     const mockParseMd = vi.spyOn(parseMd, "parseMd").mockReturnValue({
-      type: "case",
-      text: "Test Case",
-      priority: 1,
-      owningSide: [],
-      case: [],
-      caseTag: [],
-      precondition: [],
-      steps: [],
+      root: {
+        type: "generic",
+        title: "root",
+        children: [
+          {
+            type: "case",
+            title: "Test Case",
+            priority: 1,
+            owningSide: [],
+            case: [],
+            caseTag: [],
+            precondition: [],
+            steps: [],
+          },
+        ],
+      },
     });
     const mockRenderJson = vi.spyOn(renderJson, "renderJson").mockReturnValue([
       {
         data: {
-          text: "Test Case",
+          title: "Test Case",
           stepTag: 1,
           priority: 1,
         },
@@ -61,7 +69,7 @@ describe("App.vue", () => {
     const mockParseJson = vi.spyOn(parseJson, "parseJson").mockReturnValue([
       {
         type: "case",
-        text: "Test Case",
+        title: "Test Case",
         priority: 1,
         owningSide: [],
         case: [],
@@ -72,7 +80,7 @@ describe("App.vue", () => {
     ]);
     const mockRenderMd = vi
       .spyOn(renderMd, "renderMd")
-      .mockReturnValue("###### Test Case\n- Priority: P0");
+      .mockReturnValue("## Test Case\n- Priority: P0");
 
     const wrapper = mount(App);
 
@@ -81,7 +89,7 @@ describe("App.vue", () => {
       JSON.stringify([
         {
           type: "case",
-          text: "Test Case",
+          title: "Test Case",
           priority: 1,
           owningSide: [],
           case: [],
