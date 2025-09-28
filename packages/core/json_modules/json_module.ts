@@ -3,10 +3,23 @@ import type {
   MindMapNode,
   CaseNode,
   GenericNode,
-} from "../types/mindmap_types"; // Corrected import path
-import type { RawJsonNode } from "../types/rawJson_types"; // New import
+  BaseNode, // New import
+} from "../types/mindmap_types";
+import type { RawJsonNode, RawJsonData } from "../types/rawJson_types"; // New import for RawJsonData
 import { caseNodeToJson } from "./json_case";
-import { CONFIG } from "../config"; // New import
+import { CONFIG } from "../config";
+
+// Helper function to map common BaseNode fields to RawJsonData
+export function mapBaseDataFields(node: BaseNode): RawJsonData {
+  // Exported
+  const data: RawJsonData = { text: node.title }; // text is required in RawJsonData
+
+  if (node.id !== undefined) data.id = node.id;
+  if (node.expandState !== undefined) data.expandState = node.expandState;
+  if (node.aiCaseFlag !== undefined) data.aiCaseFlag = node.aiCaseFlag;
+
+  return data;
+}
 
 // Helper function for recursive conversion to JSON
 function mindMapNodeToJson(node: MindMapNode): RawJsonNode {
@@ -17,7 +30,7 @@ function mindMapNodeToJson(node: MindMapNode): RawJsonNode {
       return caseNodeToJson(node as CaseNode);
     case "generic":
       return {
-        data: { text: node.title },
+        data: mapBaseDataFields(node as GenericNode), // Use helper for generic node
         children: (node as GenericNode).children.map(mindMapNodeToJson),
       };
   }
@@ -26,25 +39,34 @@ function mindMapNodeToJson(node: MindMapNode): RawJsonNode {
 export function moduleNodeToJson(node: ModuleNode): RawJsonNode {
   return {
     data: {
-      text: node.title,
-      moduleType: node.moduleType, // Added moduleType
-      ...(node.moduleId !== undefined && { moduleId: node.moduleId }), // Add moduleId if it exists
+      ...mapBaseDataFields(node), // Include base fields
+      moduleType: node.moduleType,
+      ...(node.moduleId !== undefined && { moduleId: node.moduleId }),
+      ...(node.moduleName !== undefined && { moduleName: node.moduleName }), // Add moduleName
     },
     children: node.children.map(mindMapNodeToJson),
   };
 }
 
 export function jsonToModuleNode(raw: RawJsonNode): ModuleNode {
-  // Assuming raw.data.text is the title and raw.data.moduleType is the moduleType
-  // Children will need to be parsed recursively by the main parseJson function
   const moduleType =
-    raw.data.moduleType !== undefined ? raw.data.moduleType : 0; // Provide a default value
+    raw.data.moduleType !== undefined ? raw.data.moduleType : 0;
   return {
     type: "module",
     title: raw.data.text,
     moduleType: moduleType,
+    ...(raw.data.id !== undefined && { id: raw.data.id }), // Include id
+    ...(raw.data.expandState !== undefined && {
+      expandState: raw.data.expandState,
+    }), // Include expandState
+    ...(raw.data.aiCaseFlag !== undefined && {
+      aiCaseFlag: raw.data.aiCaseFlag,
+    }), // Include aiCaseFlag
     ...(raw.data.moduleId !== undefined && { moduleId: raw.data.moduleId }),
-    children: [], // Children will be populated by the main parseJson function
+    ...(raw.data.moduleName !== undefined && {
+      moduleName: raw.data.moduleName,
+    }), // Include moduleName
+    children: [],
   };
 }
 
@@ -52,6 +74,13 @@ export function jsonToGenericNode(raw: RawJsonNode): GenericNode {
   return {
     type: "generic",
     title: raw.data.text,
-    children: [], // Children will be populated by the main parseJson function
+    ...(raw.data.id !== undefined && { id: raw.data.id }), // Include id
+    ...(raw.data.expandState !== undefined && {
+      expandState: raw.data.expandState,
+    }), // Include expandState
+    ...(raw.data.aiCaseFlag !== undefined && {
+      aiCaseFlag: raw.data.aiCaseFlag,
+    }), // Include aiCaseFlag
+    children: [],
   };
 }

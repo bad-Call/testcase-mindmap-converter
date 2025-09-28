@@ -28,10 +28,7 @@ export function parseJson(json: RawJsonNode[]): MindMapNode[] {
       const genericNode = jsonToGenericNode(rawNode);
       if (rawNode.children && rawNode.children.length > 0) {
         // GenericNode children are (CaseNode | GenericNode)[], so filter out ModuleNodes
-        genericNode.children = parseJson(rawNode.children).filter(
-          (child): child is CaseNode | GenericNode =>
-            child.type === "case" || child.type === "generic"
-        );
+        genericNode.children = parseJson(rawNode.children) as MindMap;
       }
       return genericNode;
     }

@@ -9,13 +9,14 @@ export interface BaseNode {
 
 export interface GenericNode extends BaseNode {
   type: "generic";
-  children: (CaseNode | GenericNode)[];
+  children: MindMapNode[];
 }
 
 export interface ModuleNode extends BaseNode {
   type: "module";
   moduleType: number;
   moduleId?: number;
+  moduleName?: string; // Added moduleName
   children: MindMapNode[];
 }
 
