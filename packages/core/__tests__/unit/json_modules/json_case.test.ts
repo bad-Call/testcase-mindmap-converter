@@ -3,7 +3,6 @@ import { describe, it, expect } from "vitest";
 import { jsonToCaseNode as parseJsonCase } from "../../../json_modules/json_case";
 import { caseNodeToJson as renderJsonCase } from "../../../json_modules/json_case";
 import type { RawJsonNode } from "../../../types/rawJson_types";
-import { log } from "console";
 
 const rawCaseNode: RawJsonNode = {
   data: {

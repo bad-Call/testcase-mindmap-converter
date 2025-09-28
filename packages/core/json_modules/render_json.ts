@@ -1,19 +1,23 @@
-import type { MindMap } from "./mindmap_types";
-import { moduleNodeToJson } from "./json/json_module";
-import { caseNodeToJson } from "./json/json_case";
+import type { MindMap, MindMapNode } from "../types/mindmap_types";
+import { moduleNodeToJson } from "./json_module";
+import { caseNodeToJson } from "./json_case";
 
 export function renderJson(mindMap: MindMap): any {
-  // This assumes the root is a generic node, which is how parseMd is structured.
-  if (mindMap.root.type === "generic") {
-    return mindMap.root.children.map((node) => {
+  return mindMap
+    .map((node: MindMapNode) => {
       if (node.type === "case") {
         return caseNodeToJson(node);
       }
-      if (node.type === "generic") {
-        // Handle nested generic nodes if necessary
-        return { data: { text: node.title }, children: [] };
+      if (node.type === "module") {
+        return moduleNodeToJson(node);
       }
-    });
-  }
-  return [];
+      if (node.type === "generic") {
+        return {
+          data: { text: node.title },
+          children: renderJson(node.children as MindMap), // Recursively render children
+        };
+      }
+      return null; // Should not happen if MindMapNode is exhaustive
+    })
+    .filter(Boolean); // Filter out nulls
 }

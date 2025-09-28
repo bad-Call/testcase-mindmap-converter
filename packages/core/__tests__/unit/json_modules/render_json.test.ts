@@ -1,12 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { renderJson } from "./render_json";
-import type { CaseNode, ModuleNode } from "./mindmap_types";
+import { renderJson } from "../../../json_modules/render_json";
+import type { CaseNode, ModuleNode } from "../../../types/mindmap_types";
 
 describe("renderJson", () => {
   it("should render a CaseNode back to JSON with stepTag", () => {
     const caseNode: CaseNode = {
       type: "case",
-      text: "Test Case",
+      title: "Test Case",
       priority: 1,
       owningSide: [],
       case: [],
@@ -21,6 +21,9 @@ describe("renderJson", () => {
           text: "Test Case",
           stepTag: 1,
           priority: 1,
+          owningSide: [],
+          case: [],
+          caseTag: [],
         },
         children: [
           { data: { text: "Precondition 1", stepTag: 2 }, children: [] },
@@ -41,12 +44,12 @@ describe("renderJson", () => {
   it("should render a ModuleNode and its children back to JSON", () => {
     const moduleNode: ModuleNode = {
       type: "module",
-      text: "Test Module",
+      title: "Test Module",
       moduleType: 1,
       children: [
         {
           type: "case",
-          text: "Sub Case",
+          title: "Sub Case",
           priority: 2,
           owningSide: [],
           case: [],
@@ -66,6 +69,9 @@ describe("renderJson", () => {
               text: "Sub Case",
               stepTag: 1,
               priority: 2,
+              owningSide: [],
+              case: [],
+              caseTag: [],
             },
             children: [],
           },

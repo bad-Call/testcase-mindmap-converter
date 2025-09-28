@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { parseJson } from "./parse_json";
-import type { CaseNode, ModuleNode } from "./mindmap_types";
+import { parseJson } from "../../../json_modules/parse_json";
+import type { CaseNode, ModuleNode } from "../../../types/mindmap_types";
 
 describe("parseJson", () => {
   it("should parse a single case node with stepTag correctly", () => {
@@ -10,9 +10,6 @@ describe("parseJson", () => {
           text: "Test Case",
           stepTag: 1,
           priority: 1,
-          owningSide: [],
-          case: [],
-          caseTag: [],
         },
         children: [
           { data: { text: "Precondition 1", stepTag: 2 }, children: [] },
@@ -29,7 +26,7 @@ describe("parseJson", () => {
     expect(result).toHaveLength(1);
     const node = result[0] as CaseNode;
     expect(node.type).toBe("case");
-    expect(node.text).toBe("Test Case");
+    expect(node.title).toBe("Test Case");
     expect(node.precondition).toEqual(["Precondition 1"]);
     expect(node.steps).toEqual([{ action: "Action 1", expect: "Expect 1" }]);
   });
@@ -57,10 +54,10 @@ describe("parseJson", () => {
     expect(result).toHaveLength(1);
     const node = result[0] as ModuleNode;
     expect(node.type).toBe("module");
-    expect(node.text).toBe("Test Module");
+    expect(node.title).toBe("Test Module");
     expect(node.children).toHaveLength(1);
     const child = node.children[0] as CaseNode;
     expect(child.type).toBe("case");
-    expect(child.text).toBe("Sub Case");
+    expect(child.title).toBe("Sub Case");
   });
 });

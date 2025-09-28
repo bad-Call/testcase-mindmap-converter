@@ -3,16 +3,18 @@ import type { RawJsonNode } from "../types/rawJson_types";
 import { CONFIG } from "../config";
 
 function mapCaseDataFields(node: CaseNode) {
-  return {
-    id: node.id,
-    text: node.title,
-    priority: node.priority,
-    owningSide: node.owningSide,
-    case: node.case,
-    aiCaseFlag: node.aiCaseFlag,
-    caseTag: node.caseTag,
-    ...(node.starTag !== undefined && { starTag: node.starTag }), // Only include starTag if it's not undefined
-  };
+  const data: { [key: string]: any } = {};
+
+  if (node.id !== undefined) data.id = node.id;
+  data.text = node.title;
+  if (node.priority !== undefined) data.priority = node.priority;
+  if (node.owningSide !== undefined) data.owningSide = node.owningSide;
+  if (node.case !== undefined) data.case = node.case;
+  if (node.aiCaseFlag !== undefined) data.aiCaseFlag = node.aiCaseFlag;
+  if (node.caseTag !== undefined) data.caseTag = node.caseTag;
+  if (node.starTag !== undefined) data.starTag = node.starTag;
+
+  return data;
 }
 
 function buildChildrenFromScratch(node: CaseNode): RawJsonNode[] {
@@ -24,7 +26,6 @@ function buildChildrenFromScratch(node: CaseNode): RawJsonNode[] {
       data: {
         text: node.precondition.join("\n"),
         stepTag: CONFIG.stepTagMap.precondition,
-        aiCaseFlag: false,
       },
       children: [],
     });
@@ -39,7 +40,6 @@ function buildChildrenFromScratch(node: CaseNode): RawJsonNode[] {
           data: {
             text: step.expect,
             stepTag: CONFIG.stepTagMap.expect,
-            aiCaseFlag: false,
           },
           children: [],
         });
@@ -48,7 +48,6 @@ function buildChildrenFromScratch(node: CaseNode): RawJsonNode[] {
         data: {
           text: step.action,
           stepTag: CONFIG.stepTagMap.action,
-          aiCaseFlag: false,
         },
         children: stepChildren,
       });
