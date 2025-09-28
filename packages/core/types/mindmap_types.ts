@@ -1,3 +1,5 @@
+import type { RawJsonNode } from "./rawJson_types";
+
 export interface BaseNode {
   title: string;
   id?: string;
@@ -19,13 +21,14 @@ export interface ModuleNode extends BaseNode {
 
 export interface CaseNode extends BaseNode {
   type: "case";
-  priority: number;
-  owningSide: number[];
-  case: number[];
-  caseTag: { id: number; name: string }[];
+  priority?: number;
+  owningSide?: number[];
+  case?: number[];
+  caseTag?: { id: number; name: string }[];
   precondition: string[];
   steps: Array<{ action: string; expect: string }>;
   starTag?: number;
+  rawChildren?: RawJsonNode[]; // Add rawChildren to CaseNode
 }
 
 export type MindMapNode = ModuleNode | CaseNode | GenericNode;
