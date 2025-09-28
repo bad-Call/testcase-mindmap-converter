@@ -30,6 +30,4 @@ export interface CaseNode extends BaseNode {
 
 export type MindMapNode = ModuleNode | CaseNode | GenericNode;
 
-export interface MindMap {
-  root: MindMapNode;
-}
+export type MindMap = MindMapNode[];
