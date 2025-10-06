@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parsePrecondition } from "../../md/md_case_precond";
+import { parsePrecondition } from "../../../md_modules/md_case_precond";
 
 describe("parsePrecondition", () => {
   it("should parse a list of preconditions correctly", () => {

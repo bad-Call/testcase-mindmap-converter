@@ -42,8 +42,9 @@ export const CONFIG = {
   },
 
   patterns: {
-    heading: /^(#{2,6})\s+(.+)$/,
-    metadata: /^(\w+):\s*(.+)$/,
+    heading: /^(#{1,6})\s+(.+)$/,
+    metadata: /^(.+?):\s*(.+)$/,
+    commentedMetadata: /<!--\s*(.+?):\s*(.+?)\s*-->/,
     listItem: /^-\s+(.+)$/,
     tableRow: /^\|\s*(.+?)\s*\|\s*(.+?)\s*\|$/,
     bomPrefix: /^\uFEFF/,

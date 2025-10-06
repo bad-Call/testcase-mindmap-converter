@@ -4,8 +4,8 @@ import type {
   ModuleNode,
   CaseNode,
   GenericNode,
-} from "./mindmap_types";
-import { CONFIG } from "./config";
+} from "../types/mindmap_types";
+import { CONFIG } from "../config";
 
 function renderNode(node: MindMapNode, level: number): string {
   let markdown = "";
@@ -35,5 +35,20 @@ function renderNode(node: MindMapNode, level: number): string {
 }
 
 export function renderMd(mindMap: MindMap): string {
-  return mindMap.root.children.map((node) => renderNode(node, 2)).join("");
+  return mindMap
+    .map((node) => {
+      // Determine the initial level based on node type
+      let initialLevel = 2; // Default for modules
+      if (node.type === "case") {
+        initialLevel = 6; // Cases are always level 6
+      } else if (node.type === "generic") {
+        // For generic nodes, we might need to infer level from title or add a level property
+        // For now, let's assume generic nodes at the root are also level 2, or handle based on title prefix
+        // This might need refinement if generic nodes can have arbitrary starting levels at the root.
+        // For the current test, it's a CaseNode, so this is the primary fix.
+        initialLevel = 2;
+      }
+      return renderNode(node, initialLevel);
+    })
+    .join("");
 }

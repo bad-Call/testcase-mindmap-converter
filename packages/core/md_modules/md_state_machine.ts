@@ -1,85 +1,103 @@
 import type {
   MindMapNode,
-  ModuleNode,
-  CaseNode,
-  GenericNode,
-} from "../mindmap_types";
+  MindMap,
+  ParentNode,
+  RootNode,
+} from "../types/mindmap_types"; // Corrected import path
 import { CONFIG } from "../config";
 import { parseModule } from "./md_module";
 import { parseCase } from "./md_case";
+import { parseGeneric } from "./md_generic"; // 新增：处理 ####/##### 等
+import { start } from "repl";
 
-export function buildTree(lines: string[]): MindMapNode[] {
-  const rootNodes: MindMapNode[] = [];
-  const nodeStack: (
-    | ModuleNode
-    | GenericNode
-    | { type: "root"; children: MindMapNode[] }
-  )[] = [{ type: "root", children: rootNodes }];
-  let caseLines: string[] = [];
-  let caseStartLine = -1;
+type StackFrame = {
+  level: number; // 1-5
+  node: ParentNode;
+};
 
-  function commitCase() {
-    if (caseLines.length > 0) {
-      const caseNode = parseCase(caseLines, caseStartLine);
-      const parent = nodeStack[nodeStack.length - 1];
-      parent.children.push(caseNode);
-      caseLines = [];
-      caseStartLine = -1;
+export function buildTree(lines: string[]): MindMap {
+  const root: MindMap = [];
+  const stack: StackFrame[] = [
+    { level: 0, node: { type: "root", children: root } as RootNode },
+  ];
+
+  let buf: { startLineNum: number; lines: string[] } = {
+    startLineNum: 1,
+    lines: [],
+  }; // 当前节点累积行
+  let frame: StackFrame = stack[0]; // 正在填充的帧
+  let level: number = 0;
+  let lineNo: number = 1;
+
+  function pushStack() {
+    // 弹出比新层级浅的栈帧
+    while (stack.length > 1 && stack[stack.length - 1].level >= level) {
+      stack.pop();
+    }
+    frame = stack[stack.length - 1]; // Update frame after popping
+
+    // 把之前累积的行 dispatch 给当前帧
+    const node = dispatch(level)(buf.lines, buf.startLineNum);
+    buf = { startLineNum: lineNo, lines: [] };
+
+    const parent = frame.node;
+    parent.children!.push(node);
+
+    // 压栈 & 更新当前帧 (只有 ParentNode 才能压栈)
+    if ("children" in node) {
+      frame = { level, node: node as ParentNode };
+      stack.push(frame);
     }
   }
 
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    const headingMatch = line.match(CONFIG.patterns.heading);
-
-    if (headingMatch) {
-      commitCase();
-      const prefix = headingMatch[1];
-      const moduleType =
-        CONFIG.moduleTypeMap[prefix as keyof typeof CONFIG.moduleTypeMap];
-
-      if (moduleType) {
-        const moduleNode = parseModule(line) as ModuleNode;
-        moduleNode.children = [];
-
-        while (
-          nodeStack.length > 1 &&
-          (nodeStack[nodeStack.length - 1] as ModuleNode).moduleType >=
-            moduleNode.moduleType
-        ) {
-          nodeStack.pop();
-        }
-
-        const parent = nodeStack[nodeStack.length - 1];
-        if (parent.type === "module") {
-          (parent as ModuleNode).children.push(moduleNode);
-        } else if (parent.type === "root") {
-          parent.children.push(moduleNode);
-        }
-        nodeStack.push(moduleNode);
-      } else {
-        // Generic node for other headings
-        const genericNode: GenericNode = {
-          type: "generic",
-          title: headingMatch[2].trim(),
-          children: [],
-        };
-        const parent = nodeStack[nodeStack.length - 1];
-        if (parent.type !== "root") {
-          (parent as ModuleNode | GenericNode).children.push(genericNode);
-        } else {
-          parent.children.push(genericNode);
-        }
-        nodeStack.push(genericNode);
+  function pushBuf(line: string) {
+    if (line.trim().length > 0) {
+      if (buf.lines.length === 0) {
+        buf.startLineNum = lineNo;
       }
+      buf.lines.push(line);
+    }
+  }
+
+  for (; lineNo <= lines.length; lineNo++) {
+    const line = lines[lineNo - 1];
+    const m = line.match(CONFIG.patterns.heading);
+    if (!m) {
+      // 非 heading → 累积
+      pushBuf(line);
+      continue;
     } else {
-      if (caseLines.length === 0) {
-        caseStartLine = i + 1;
+      /* -------- 遇到新 heading -------- */
+      if (buf.lines.length > 0) {
+        pushStack();
       }
-      caseLines.push(line);
+      level = m[1].length;
+      if (line.trim().length === 0) {
+        continue;
+      }
+      pushBuf(line);
     }
   }
+  // 处理最后一个 heading 后的剩余行
+  if (buf.lines.length > 0) {
+    pushStack();
+  }
+  return root;
+}
 
-  commitCase();
-  return (nodeStack[0] as { type: "root"; children: MindMapNode[] }).children;
+/* ========= 统一 dispatch 函数 ========= */
+function dispatch(
+  level: number
+): (lines: string[], lineNo: number) => MindMapNode {
+  switch (level) {
+    case 2:
+    case 3:
+      // 模块节点：把剩余行交给 md_module 二次解析
+      return parseModule;
+    case 6:
+      // 用例节点：把剩余行交给 md_case 二次解析
+      return parseCase;
+    default:
+      return parseGeneric;
+  }
 }

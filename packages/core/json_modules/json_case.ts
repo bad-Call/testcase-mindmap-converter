@@ -1,12 +1,11 @@
 import type { CaseNode } from "../types/mindmap_types";
-import type { RawJsonNode } from "../types/rawJson_types";
+import type { RawJsonData, RawJsonNode } from "../types/rawJson_types";
 import { CONFIG } from "../config";
 
 function mapCaseDataFields(node: CaseNode) {
-  const data: { [key: string]: any } = {};
+  const data: RawJsonData = { text: node.title };
 
   if (node.id !== undefined) data.id = node.id;
-  data.text = node.title;
   if (node.priority !== undefined) data.priority = node.priority;
   if (node.owningSide !== undefined) data.owningSide = node.owningSide;
   if (node.case !== undefined) data.case = node.case;

@@ -1,7 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { buildTree } from "../../md/md_state_machine";
-import { CONFIG } from "../../config";
-import type { ModuleNode, CaseNode, GenericNode } from "../../mindmap_types";
+import { buildTree } from "../../../md_modules/md_state_machine";
+import { CONFIG } from "../../../config";
+import type {
+  ModuleNode,
+  CaseNode,
+  GenericNode,
+} from "../../../types/mindmap_types";
 
 describe("buildTree", () => {
   it("should build a tree with modules and cases", () => {
@@ -9,10 +13,10 @@ describe("buildTree", () => {
       "## Module 1",
       "### Sub-Module 1.1",
       "###### Case 1.1.1",
-      "- Priority: S",
-      "- Precondition:",
-      "  - Precond 1",
-      "- Steps:",
+      "优先级: S",
+      "**前置条件**",
+      "- Precond 1",
+      "**测试步骤**",
       "| Action | Expected Result |",
       "|---|---|",
       "| Step 1 | Result 1 |",
@@ -64,7 +68,7 @@ describe("buildTree", () => {
     expect(case2_1.title).toBe("Case 2.1");
   });
 
-  it("should handle generic nodes for unconfigured headings", () => {
+  it("should handle generic nodes for unconfigured headings (level 4)", () => {
     const mdContent = [
       "## Module A",
       "#### Category X", // This should be a generic node
@@ -92,6 +96,50 @@ describe("buildTree", () => {
     const moduleB = result[1] as ModuleNode;
     expect(moduleB.type).toBe("module");
     expect(moduleB.title).toBe("Module B");
+  });
+
+  it("should handle generic nodes for unconfigured headings (level 5)", () => {
+    const mdContent = [
+      "## Module C",
+      "##### Sub-Category Y", // This should be a generic node
+      "###### Case C.Y.1",
+    ];
+
+    const result = buildTree(mdContent);
+    expect(result.length).toBe(1);
+
+    const moduleC = result[0] as ModuleNode;
+    expect(moduleC.type).toBe("module");
+    expect(moduleC.title).toBe("Module C");
+    expect(moduleC.children.length).toBe(1);
+
+    const subCategoryY = moduleC.children[0] as GenericNode;
+    expect(subCategoryY.type).toBe("generic");
+    expect(subCategoryY.title).toBe("Sub-Category Y");
+    expect(subCategoryY.children.length).toBe(1);
+
+    const caseC_Y_1 = subCategoryY.children[0] as CaseNode;
+    expect(caseC_Y_1.type).toBe("case");
+    expect(caseC_Y_1.title).toBe("Case C.Y.1");
+  });
+
+  it("should handle generic nodes for unconfigured headings (level 1)", () => {
+    const mdContent = [
+      "# Top Level Generic", // This should be a generic node
+      "## Module D",
+    ];
+
+    const result = buildTree(mdContent);
+    expect(result.length).toBe(1);
+
+    const topLevelGeneric = result[0] as GenericNode;
+    expect(topLevelGeneric.type).toBe("generic");
+    expect(topLevelGeneric.title).toBe("Top Level Generic");
+    expect(topLevelGeneric.children.length).toBe(1);
+
+    const moduleD = topLevelGeneric.children[0] as ModuleNode;
+    expect(moduleD.type).toBe("module");
+    expect(moduleD.title).toBe("Module D");
   });
 
   it("should handle a flat list of cases", () => {

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { parseSteps } from "../../md/md_case_steps";
-import { ParseError } from "../../errors";
+import { parseSteps } from "../../../md_modules/md_case_steps";
+import { ParseError } from "../../../errors";
 
 describe("parseSteps", () => {
   it("should parse a markdown table of steps correctly", () => {

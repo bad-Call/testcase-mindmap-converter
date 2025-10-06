@@ -12,6 +12,11 @@ export interface GenericNode extends BaseNode {
   children: MindMapNode[];
 }
 
+export interface RootNode extends BaseNode {
+  type: "root";
+  children: MindMapNode[];
+}
+
 export interface ModuleNode extends BaseNode {
   type: "module";
   moduleType: number;
@@ -35,3 +40,5 @@ export interface CaseNode extends BaseNode {
 export type MindMapNode = ModuleNode | CaseNode | GenericNode;
 
 export type MindMap = MindMapNode[];
+
+export type ParentNode = RootNode | ModuleNode | GenericNode;
